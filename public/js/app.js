@@ -16568,11 +16568,11 @@ var render = function() {
   return _c("div", [
     _vm.error
       ? _c("div", { staticClass: "alert alert-danger" }, [
-          _c("p", [
-            _vm._v(
-              "There was an error, unable to sign in with those credentials."
-            )
-          ])
+          _c("a", { staticClass: "close", on: { click: _vm.hideAlert } }, [
+            _vm._v("×")
+          ]),
+          _vm._v(" "),
+          _c("p", [_vm._v(_vm._s(_vm.remoteMsg))])
         ])
       : _vm._e(),
     _vm._v(" "),
@@ -17845,13 +17845,15 @@ module.exports = {
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   data: function data() {
     return {
       email: null,
       password: null,
-      error: false
+      error: false,
+      remoteMsg: ''
     };
   },
 
@@ -17864,11 +17866,19 @@ module.exports = {
           password: app.password
         },
         success: function success() {},
-        error: function error() {},
+        error: function error(e) {
+          var errResp = e.response.data;
+          app.error = true;
+          app.remoteMsg = errResp.msg;
+          console.log('[Error] Login: ' + errResp.msg);
+        },
         rememberMe: true,
         redirect: '/dashboard',
         fetchUser: true
       });
+    },
+    hideAlert: function hideAlert() {
+      this.error = false;
     }
   }
 });

@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="alert alert-danger" v-if="error">
-            <p>There was an error, unable to sign in with those credentials.</p>
+            <a class="close" @click="hideAlert">&times;</a>
+            <p>{{ remoteMsg }}</p>
         </div>
         <form autocomplete="off" @submit.prevent="login" method="post">
             <div class="form-group">
@@ -23,7 +24,8 @@
       return {
         email: null,
         password: null,
-        error: false
+        error: false,
+        remoteMsg: ''
       }
     },
     methods: {
@@ -35,12 +37,20 @@
               password: app.password
             }, 
             success: function () {},
-            error: function () {},
+            error: function (e) {
+                const errResp = e.response.data;
+                app.error = true;
+                app.remoteMsg = errResp.msg;
+                console.log('[Error] Login: ' + errResp.msg);
+            },
             rememberMe: true,
             redirect: '/dashboard',
             fetchUser: true,
         });       
       },
+      hideAlert() {
+          this.error = false;
+      }
     }
   } 
 </script>
